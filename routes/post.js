@@ -90,6 +90,30 @@ router.get("/get", async (req, res) => {
 
 const perPage = 16; // Number of blogs to return per page
 
+
+router.get("/:category", async (req, res) => {
+  try {
+    const page = req.query.page ? parseInt(req.query.page) : 1;
+    const skip = (page - 1) * perPage;
+    const category = req.params.category;
+
+    // Count the total number of documents for the specified category
+    const totalPosts = await Post.countDocuments({ category });
+
+    const posts = await Post.find({ category })
+      .skip(skip)
+      .limit(perPage)
+      .sort({ createdAt: -1 })
+
+    res.json({
+      posts,
+      totalPosts,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.get("/allposts", async (req, res) => {
   try {
     const page = req.query.page ? parseInt(req.query.page) : 1;
@@ -112,29 +136,6 @@ router.get("/allposts", async (req, res) => {
   }
 });
 
-router.get("/:category", async (req, res) => {
-  try {
-    const page = req.query.page ? parseInt(req.query.page) : 1;
-    const skip = (page - 1) * perPage;
-    const category = req.params.category;
-
-    // Count the total number of documents for the specified category
-    const totalPosts = await Post.countDocuments({ category });
-
-    const posts = await Post.find({ category })
-      .skip(skip)
-      .limit(perPage)
-      .sort({ createdAt: -1 })
-      .populate("media");
-
-    res.json({
-      posts,
-      totalPosts,
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
 
 router.get("/posts/:id", async (req, res) => {
   try {

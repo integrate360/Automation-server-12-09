@@ -114,7 +114,7 @@ router.get("/:category", async (req, res) => {
   }
 });
 
-router.get("/allposts", async (req, res) => {
+router.get("/posts/allposts", async (req, res) => {
   try {
     const page = req.query.page ? parseInt(req.query.page) : 1;
     const skip = (page - 1) * perPage;

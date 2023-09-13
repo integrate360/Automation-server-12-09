@@ -47,6 +47,7 @@ router.post("/create", authMiddleware, async (req, res) => {
         slug,
         metaDescription,
         image,
+        scheduledDate,
       });
       const savedPost = await post.save();
 

@@ -28,7 +28,7 @@ router.get("/:category", async (req, res) => {
     const category = req.params.category;
 
     // Check if the category is valid (Home Ads or Directory Ads)
-    if (category !== "Home Ads" && category !== "Directory Ads") {
+    if (category !== "Home Ads" && category !== "Directory Ads" && category !== "Featured Ads") {
       return res.status(400).json({ error: "Invalid category" });
     }
 

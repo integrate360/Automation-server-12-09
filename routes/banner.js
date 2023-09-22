@@ -3,10 +3,10 @@ const router = express.Router();
 const Banner = require("../models/Banner");
 
 // Create a new banner
-router.post("/banners", async (req, res) => {
+router.post("/create", async (req, res) => {
   try {
-    const { name, image } = req.body;
-    const newBanner = new Banner({ name, image });
+    const { name, image, link } = req.body;
+    const newBanner = new Banner({ name, image, link });
     const savedBanner = await newBanner.save();
     res.status(201).json(savedBanner);
   } catch (error) {
@@ -15,7 +15,7 @@ router.post("/banners", async (req, res) => {
 });
 
 // Get all banners
-router.get("/banners", async (req, res) => {
+router.get("/allbanners", async (req, res) => {
   try {
     const banners = await Banner.find();
     res.json(banners);
@@ -25,7 +25,7 @@ router.get("/banners", async (req, res) => {
 });
 
 // Get a single banner by ID
-router.get("/banners/:id", async (req, res) => {
+router.get("/get/:id", async (req, res) => {
   try {
     const banner = await Banner.findById(req.params.id);
     if (!banner) {
@@ -40,10 +40,10 @@ router.get("/banners/:id", async (req, res) => {
 // Update a banner by ID
 router.put("/banners/:id", async (req, res) => {
   try {
-    const { name, image } = req.body;
+    const { name, image, link } = req.body;
     const updatedBanner = await Banner.findByIdAndUpdate(
       req.params.id,
-      { name, image },
+      { name, image, link },
       { new: true }
     );
     if (!updatedBanner) {
@@ -56,7 +56,7 @@ router.put("/banners/:id", async (req, res) => {
 });
 
 // Delete a banner by ID
-router.delete("/banners/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const deletedBanner = await Banner.findByIdAndRemove(req.params.id);
     if (!deletedBanner) {

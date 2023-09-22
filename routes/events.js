@@ -18,6 +18,7 @@ router.post("/create", async (req, res) => {
       eventType,
       organiserName,
       organiserEmail,
+      organiser_number,
       venue,
       city,
       state,
@@ -52,6 +53,7 @@ router.post("/create", async (req, res) => {
       eventType,
       organiserName,
       organiserEmail,
+      organiser_number,
       venue,
       city,
       state,
@@ -94,20 +96,60 @@ router.get("/allevents", async (req, res) => {
     const page = req.query.page ? parseInt(req.query.page) : 1;
     const skip = (page - 1) * perPage;
 
-    // Count the total number of documents
-    const totalPosts = await Event.countDocuments();
-
+    // Fetch events and sort by date in descending order
     const posts = await Event.find()
       .skip(skip)
       .limit(perPage)
-      .sort({ startDate: -1 })
+      .sort({ createdAt: -1 }) // Sort by startDate in descending order
       .populate("media");
+
+    // Count the total number of documents
+    const totalPosts = await Event.countDocuments();
 
     res.json({
       posts,
       totalPosts,
     });
   } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/event", async (req, res) => {
+  try {
+    const page = req.query.page ? parseInt(req.query.page) : 1;
+    const skip = (page - 1) * perPage;
+
+    // Count the total number of documents
+    const totalPosts = await Event.countDocuments();
+
+    let query = Event.find()
+      .skip(skip)
+      .limit(perPage)
+      .sort({ startDate: -1 })
+      .populate("media");
+
+    // If a month parameter is provided in the query, filter by month
+    if (req.query.month) {
+      const month = parseInt(req.query.month);
+      const startOfMonth = new Date(
+        Date.UTC(new Date().getFullYear(), month - 1, 1)
+      );
+      const endOfMonth = new Date(
+        Date.UTC(new Date().getFullYear(), month, 0, 23, 59, 59)
+      );
+
+      query = query.where("startDate").gte(startOfMonth).lte(endOfMonth);
+    }
+
+    const posts = await query.exec();
+
+    res.json({
+      posts,
+      totalPosts,
+    });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

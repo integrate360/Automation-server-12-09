@@ -14,6 +14,7 @@ const bannerRoutes = require("./routes/banner");
 const eventsRoutes = require("./routes/events");
 const adsRoutes = require("./routes/ads");
 const headeradsRoutes = require("./routes/headerAds");
+const mailRoutes = require("./routes/mail");
 const mediaRoutes = require("./routes/media");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -90,6 +91,7 @@ app.use("/api/events", eventsRoutes);
 app.use("/api/headerads", headeradsRoutes);
 app.use("/api/mainads", adsRoutes);
 app.use("/api/banner", bannerRoutes);
+app.use("/api/mail", mailRoutes);
 
 // Start server
 const port = process.env.PORT || 5000;
